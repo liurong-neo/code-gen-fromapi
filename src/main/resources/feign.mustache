@@ -1,0 +1,45 @@
+package {{feignPackage}};
+
+import javax.validation.Valid;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+{{#needImportModule}}import {{modelPackage}}.*;{{/needImportModule}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.fzm.baas.base.config.FeignConfig;
+import com.fzm.baas.base.model.BaaSException;
+import com.fzm.baas.base.model.Result;
+import com.fzm.baas.base.model.quickquery.QuickQueryModel;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+import {{feignFallBackPackage}}.{{className}}{{versionName}}FeignFallBackFactory;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+import com.fzm.baas.base.model.PageResult;
+
+@FeignClient(name="{{serviceName}}",contextId="{{className}}Api{{versionName}}",fallbackFactory = {{className}}{{versionName}}FeignFallBackFactory.class, configuration = FeignConfig.class)
+public interface {{className}}Api {
+
+{{#pathGetEntityList}}
+    @GetMapping("{{fullPath}}")
+    public {{^responseType}}Result{{/responseType}}{{#responseType}}Result<{{&responseType}}>{{/responseType}} {{methodName}}({{#params}} {{#pathParamTag}}@PathVariable(name = "{{flag}}") {{paramType}} {{paramName}} {{/pathParamTag}}{{#queryParamTag}}@RequestParam(required ={{required}},name="{{flag}}") {{paramType}} {{paramName}}{{/queryParamTag}} {{/params}});
+{{/pathGetEntityList}}
+
+{{#pathDeleteEntityList}}
+    @DeleteMapping("{{fullPath}}")
+    public {{^responseType}}Result{{/responseType}}{{#responseType}}Result<{{&responseType}}>{{/responseType}} {{methodName}}({{#params}} {{#bodyParamTag}}@RequestBody @Valid{{/bodyParamTag}} {{#pathParamTag}}@PathVariable(name = "{{flag}}"){{/pathParamTag}}{{#queryParamTag}}@RequestParam(required ={{required}},name="{{flag}}") {{/queryParamTag}} {{&paramType}} {{paramName}}{{/params}});
+{{/pathDeleteEntityList}}
+
+{{#pathPostEntityList}}
+    @PostMapping("{{fullPath}}")
+    public {{^responseType}}Result{{/responseType}}{{#responseType}}Result<{{&responseType}}>{{/responseType}} {{methodName}}({{^uploadRequest}}{{#params}}{{#queryParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestParam(required={{required}},name="{{flag}}") {{/queryParamTag}}{{#bodyParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestBody @Valid{{/bodyParamTag}} {{&paramType}} {{paramName}}{{/params}}{{/uploadRequest}}{{#uploadRequest}}{{#params}}{{#queryParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestParam(required={{required}},name="{{flag}}"){{&paramType}} {{paramName}}{{/queryParamTag}}{{#bodyParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}{{&paramType}} {{paramName}}{{/bodyParamTag}} {{/params}}{{/uploadRequest}});
+{{/pathPostEntityList}}
+
+{{#pathPutEntityList}}
+    @PutMapping("{{fullPath}}")
+    public {{^responseType}}Result{{/responseType}}{{#responseType}}Result<{{&responseType}}>{{/responseType}} {{methodName}}({{#params}}{{#queryParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestParam(required={{required}},name="{{flag}}") {{/queryParamTag}}{{#bodyParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestBody @Valid{{/bodyParamTag}} {{&paramType}} {{paramName}}{{/params}}) ;
+{{/pathPutEntityList}}
+}

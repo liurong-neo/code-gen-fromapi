@@ -1,0 +1,2022 @@
+openapi: 3.0.1
+info:
+  title: testUpload
+  description: ''
+  version: 1.0.0
+tags:
+  - name: Chain
+paths:
+  /v1/chainconfig/template/{type}:
+    get:
+      summary: 获取配置模板
+      x-apifox-folder: chain-service/chain
+      x-apifox-status: released
+      deprecated: false
+      description: 获取配置模板本
+      tags:
+        - 链配置
+      parameters:
+        - name: type
+          in: path
+          description: 共识类型 0联盟链，1私链,2平行链
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Object-Id
+          in: header
+          description: 对象ID
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: Object-Type
+          in: header
+          description: 对象类型
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: User-ID
+          in: header
+          description: 登录用户ID
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: User-Name
+          in: header
+          description: 登录用户名称
+          required: false
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigTemplate'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chainOrder/{orderId}:
+    get:
+      summary: 根据订单ID查看链订单
+      x-apifox-folder: chain-service/chainOrder
+      x-apifox-status: released
+      deprecated: false
+      description: ''
+      tags:
+        - 链订单
+      parameters:
+        - name: orderId
+          in: path
+          description: orderId
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChainOrderModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      x-baas-ref-resources: chain
+      x-baas-ref-apis: '{"$license-service-a$":["GET /v1/chain/manage/consortium/login-type","GET /v2/chain/consortium/page","DELETE /v2/chain/consortium/purge/{chain_id}"]}'
+      x-baas-roles: manager,normal
+  /v1/chain/version:
+    post:
+      summary: 新增版本信息
+      x-apifox-folder: Chain
+      x-apifox-status: released
+      deprecated: false
+      description: 新增链版本列表
+      tags:
+        - Chain
+      parameters:
+        - name: version
+          in: query
+          description: 版本号
+          required: true
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+                isRestart:
+                  type: string
+                version:
+                  type: string
+              required:
+                - version
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+components:
+  schemas:
+    ConsortiumResponse:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        chainVersion:
+          type: string
+          description: 链版本信息
+        createTime:
+          type: integer
+          format: int64
+          description: 创建时间
+        createType:
+          type: integer
+          format: int32
+          description: 创建类型
+        creator:
+          type: integer
+          format: int64
+          description: 创建者
+        creatorName:
+          type: string
+          description: 创建者名字
+        enterpriseCount:
+          type: integer
+          format: int32
+          description: 企业成员数量
+        genesis:
+          type: string
+          description: 创世地址
+        indicator:
+          type: object
+          description: 监控指标数据(map类型数据结构),activeNodes(存活的节点),totalTransaction(链上交易总数),maxTps(tps),avgBlockTime(平均出块时间),
+        name:
+          type: string
+          description: 链名称
+        nodeCount:
+          type: integer
+          format: int32
+          description: 节点数量
+        owner:
+          type: integer
+          format: int64
+          description: 拥有者
+        ownerName:
+          type: string
+          description: 拥有者名字
+        paraCount:
+          type: integer
+          format: int32
+          description: 挂载平行链条数
+        status:
+          type: integer
+          format: int32
+          description: 1 正常  0 异常
+        superManger:
+          type: string
+          description: 超管地址名称
+      title: ConsortiumResponse
+      x-apifox-folder: Schemas
+    BaseChainNodeRequest:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        nodeId:
+          type: string
+          description: 节点唯一id，前端使用UUID生成
+      title: BaseChainNodeRequest
+      x-apifox-folder: Schemas
+    BindPubIpRequest:
+      type: object
+      properties:
+        driverId:
+          type: object
+          description: 云平台唯一ID
+        ipName:
+          type: string
+          description: ip名称
+        nodeId:
+          type: string
+          description: 节点Id
+        payType:
+          type: string
+          example: prePaid, postPaid
+          description: 支付类型
+        prePaidParam:
+          $ref: '#/components/schemas/PrePaidParam'
+        profile:
+          type: integer
+          format: int64
+          description: 关联的偏好信息
+        publicIp:
+          $ref: '#/components/schemas/PublicIp'
+        serverId:
+          type: string
+          description: 云主机Id，可不传
+      title: BindPubIpRequest
+      x-apifox-folder: Schemas
+    ParaChainResponse:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        chainVersion:
+          type: string
+          description: 链版本信息
+        createTime:
+          type: integer
+          format: int64
+          description: 创建时间
+        createType:
+          type: integer
+          format: int32
+          description: 创建类型
+        creator:
+          type: integer
+          format: int64
+          description: 创建者
+        creatorName:
+          type: string
+          description: 创建者名字
+        eid:
+          type: string
+          description: eid
+        ename:
+          type: string
+        genesis:
+          type: string
+          description: 创世地址
+        indicator:
+          type: object
+          description: 监控指标数据(map类型数据结构),activeNodes(存活的节点),totalTransaction(链上交易总数),maxTps(tps),avgBlockTime(平均出块时间),
+        mainChainId:
+          type: string
+          description: 主链链ID
+        mainChainName:
+          type: string
+          description: 主链名称
+        name:
+          type: string
+          description: 链名称
+        nodeCount:
+          type: integer
+          format: int32
+          description: 节点数量
+        nodeList:
+          type: array
+          description: 节点列表
+          items:
+            $ref: '#/components/schemas/BaseNodeResponse'
+        owner:
+          type: integer
+          format: int64
+          description: 拥有者
+        ownerName:
+          type: string
+          description: 拥有者名字
+        status:
+          type: integer
+          format: int32
+          description: 1 正常  0 异常
+        superManger:
+          type: string
+          description: 超管地址
+      title: ParaChainResponse
+      x-apifox-folder: Schemas
+    Organization:
+      type: object
+      properties:
+        address:
+          type: string
+          description: 企业地址
+        addressList:
+          type: array
+          description: 地区
+          items:
+            type: string
+        addressTran:
+          type: string
+          description: 地区
+        certs:
+          type: array
+          description: 企业资质数据
+          items:
+            type: string
+        createTime:
+          type: integer
+          format: int64
+          description: 企业创建时间
+        creator:
+          type: string
+          description: 企业创始人
+        federations:
+          type: array
+          description: 企业加入的联盟
+          items:
+            type: string
+        manage:
+          type: string
+          description: 经营范围
+        orgID:
+          type: string
+          description: 企业id
+        orgName:
+          type: string
+          description: 企业名
+        owner:
+          type: string
+          description: 企业所有人
+        ownerId:
+          type: integer
+          format: int64
+          description: 企业所有人id
+        remark:
+          type: string
+          description: 拒绝理由
+        status:
+          type: integer
+          format: int32
+          description: 企业状态
+        type:
+          type: string
+          description: 所属行业
+        userRoleList:
+          type: array
+          description: 用户在该企业的角色信息
+          items:
+            $ref: '#/components/schemas/UserRoleObj'
+      title: Organization
+      x-apifox-folder: Schemas
+    MainChainRequest:
+      type: object
+      properties:
+        chainExplorerNodeRequest:
+          $ref: '#/components/schemas/ChainExplorerNodeRequest'
+        chainId:
+          type: string
+          example: 全局唯一的UUID，前端填充
+          description: 区块链ID
+        cloudParam:
+          $ref: '#/components/schemas/CloudParam'
+        createUserId:
+          type: integer
+          format: int64
+          description: 创建用户ID
+        explorerCloudParam:
+          $ref: '#/components/schemas/CloudParam'
+        fedId:
+          type: string
+          description: 链所属联盟
+        name:
+          type: string
+          description: 链名称
+        nodes:
+          type: array
+          description: 节点列表
+          items:
+            $ref: '#/components/schemas/ChainNodeRequest'
+        params:
+          $ref: '#/components/schemas/ConfigParams'
+        source:
+          type: integer
+          format: int32
+          description: 来源类型0创建1导入
+        title:
+          type: string
+          description: 链title
+      title: MainChainRequest
+      x-apifox-folder: Schemas
+    IPage:
+      type: object
+      properties:
+        current:
+          type: integer
+          format: int64
+        hitCount:
+          type: boolean
+        pages:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            type: object
+        searchCount:
+          type: boolean
+        size:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      title: IPage
+      x-apifox-folder: Schemas
+    AddNodesRequest:
+      type: object
+      properties:
+        chainExplorerNodeRequest:
+          $ref: '#/components/schemas/ChainExplorerNodeRequest'
+        chainId:
+          type: string
+          example: 全局唯一的UUID，前端填充
+          description: 区块链ID
+        cloudParam:
+          $ref: '#/components/schemas/CloudParam'
+        explorerCloudParam:
+          $ref: '#/components/schemas/CloudParam'
+        nodes:
+          type: array
+          description: 节点列表
+          items:
+            $ref: '#/components/schemas/ChainNodeRequest'
+      title: AddNodesRequest
+      x-apifox-folder: Schemas
+    UserRoleObj:
+      type: object
+      properties:
+        roleId:
+          type: string
+          description: 角色id
+        roleName:
+          type: string
+          description: 角色名称
+      title: UserRoleObj
+      x-apifox-folder: Schemas
+    BaseOrderModel:
+      type: object
+      properties:
+        autoRenew:
+          type: boolean
+          description: 是否自动续费
+        billingMode:
+          type: string
+          description: 计费模式
+        chainId:
+          type: string
+        commodityInstanceId:
+          type: string
+          description: 商品实例ID:UUID
+        createUserId:
+          type: string
+          description: 创建用户ID
+        duration:
+          type: string
+          description: 时长
+        eid:
+          type: string
+          description: 企业ID
+        id:
+          type: string
+        innerIp:
+          type: string
+        orderId:
+          type: integer
+          format: int64
+          description: 订单ID
+        orderServiceType:
+          type: string
+          description: 订单服务：NEW：新增，ADD:增加(添加节点使用)
+        outerIp:
+          type: string
+        payerUser:
+          type: string
+          description: 支付用户
+        profileId:
+          type: integer
+          format: int32
+          description: 套餐ID
+      title: BaseOrderModel
+      description: BaseOrderModel
+      x-apifox-folder: Schemas
+    BaseNodeResponse:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        cloudId:
+          type: string
+          description: 对应云主机实例ID
+        createTime:
+          type: integer
+          format: int64
+          description: 节点创建时间
+        id:
+          type: string
+        innerIp:
+          type: string
+          description: 内网ip
+        name:
+          type: string
+          description: 节点名称
+        outerIp:
+          type: string
+          description: 外网ip
+        serviceType:
+          type: integer
+          format: int32
+          description: 节点创建方式，0：自备节点，1：个人公有云节点，2：BaaS节点
+        sshPort:
+          type: integer
+          format: int32
+          description: ssh端口
+        status:
+          type: integer
+          format: int32
+          description: 节点状态
+        type:
+          type: integer
+          format: int32
+          description: 节点类型
+      title: BaseNodeResponse
+      x-apifox-folder: Schemas
+    OrderPriceDto:
+      type: object
+      properties:
+        children:
+          type: array
+          description: 子订单价格
+          items:
+            $ref: '#/components/schemas/OrderPriceDto'
+        details:
+          type: object
+          description: 价格明细
+          additionalProperties:
+            type: number
+        moneyDue:
+          type: number
+          description: 应付金额
+        moneyUnit:
+          type: string
+          description: 单位(RMB/USD)
+        originalMoney:
+          type: number
+          description: 原应付金额
+        payerUser:
+          type: string
+          description: 支付用户
+      title: OrderPriceDto
+      x-apifox-folder: Schemas
+    ChainConfig:
+      type: object
+      properties:
+        chainId:
+          type: string
+        createTime:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int32
+        isConfig:
+          type: integer
+          format: int32
+        paramName:
+          type: string
+        updateTime:
+          type: integer
+          format: int64
+        value:
+          type: string
+      title: ChainConfig
+      x-apifox-folder: Schemas
+    CloudParam:
+      type: object
+      properties:
+        autoRenew:
+          type: boolean
+          description: 是否自动购买
+        periodNum:
+          type: integer
+          format: int32
+          description: 付费周期，按月 1-9， 按年1-3
+        periodType:
+          type: string
+          description: 付费周期： month/year
+        postpaid:
+          type: boolean
+          description: 是否后付费
+        profileId:
+          type: integer
+          format: int64
+          description: 套餐ID
+      title: CloudParam
+      x-apifox-folder: Schemas
+    BaseChainResponse:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        name:
+          type: string
+          description: 链名称
+        status:
+          type: integer
+          format: int32
+          description: 链状态
+      title: BaseChainResponse
+      x-apifox-folder: Schemas
+    IPage«BaseChainResponse»:
+      type: object
+      properties:
+        current:
+          type: integer
+          format: int64
+        hitCount:
+          type: boolean
+        pages:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseChainResponse'
+        searchCount:
+          type: boolean
+        size:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      title: IPage«BaseChainResponse»
+      x-apifox-folder: Schemas
+    OrderModel:
+      type: object
+      properties:
+        canCancel:
+          type: boolean
+          description: 能否取消
+        canModify:
+          type: boolean
+          description: 能修改
+        canPay:
+          type: boolean
+          description: 能否支付
+        canRefund:
+          type: boolean
+          description: 是否能退款
+        child:
+          type: boolean
+          description: 是否子订单
+        children:
+          type: array
+          description: 子订单
+          items:
+            $ref: '#/components/schemas/OrderModel'
+        commodityCode:
+          type: string
+          description: 商品CODE
+        commodityId:
+          type: integer
+          format: int64
+          description: 商品ID
+        commodityInstanceId:
+          type: string
+          description: 商品实例ID:UUID
+        commodityName:
+          type: string
+          description: 商品名称
+        createTime:
+          type: integer
+          format: int64
+          description: 创建时间
+        createUserId:
+          type: string
+          description: 创建用户ID
+        createUserName:
+          type: string
+          description: 创建用户名称
+        detailMap:
+          type: object
+          description: 订单明细对象
+          additionalProperties:
+            $ref: '#/components/schemas/OrderDetailModel'
+        detailModelList:
+          type: array
+          description: 订单明细列表
+          items:
+            $ref: '#/components/schemas/OrderDetailModel'
+        displayCommodity:
+          type: string
+          description: 订单商品展示信息
+        expireInfo:
+          $ref: '#/components/schemas/OrderExpireModel'
+        moneyDue:
+          type: number
+          description: 应付金额
+        moneyUnit:
+          type: string
+          description: 单位(CNY/USD)
+        orderCategory:
+          type: string
+          description: 订单分类：CHARGE：充值，SYSTEM:系统服务，THIRD:第三方服务
+        orderId:
+          type: integer
+          format: int64
+          description: 订单ID
+        orderName:
+          type: string
+          description: 订单名称
+        orderRefund:
+          $ref: '#/components/schemas/OrderRefundResultModel'
+        orderServiceType:
+          type: string
+          description: 订单服务：NEW：新增，ADD:增加(添加节点使用)
+        orderState:
+          type: string
+          description: 订单状态：UNPAID:未支付，PARTPAID:部分支付，PAID:已支付，CANCELLED:已取消
+        orderType:
+          type: string
+          description: 订单类型：NEW:新购，RENEW:续费,CHANGE:变更
+        originalMoney:
+          type: number
+          description: 原应付金额
+        owner:
+          type: boolean
+          description: 是否自己订单
+        parent:
+          type: boolean
+          description: 是否父订单
+        parentId:
+          type: integer
+          format: int64
+          description: 父ID
+        payInfo:
+          $ref: '#/components/schemas/OrderPayInfoModel'
+        payeeUser:
+          type: string
+          description: 收款用户
+        payerUser:
+          type: string
+          description: 支付用户
+        quantity:
+          type: number
+          description: 数量,默认是1
+        relateId:
+          type: integer
+          format: int64
+          description: 关联订单ID
+      title: OrderModel
+      description: OrderModel
+      x-apifox-folder: Schemas
+    ChainResponse:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        chainVersion:
+          type: string
+          description: 链版本信息
+        createTime:
+          type: integer
+          format: int64
+          description: 创建时间
+        creator:
+          type: integer
+          format: int64
+          description: 创建者
+        creatorName:
+          type: string
+          description: 创建者名字
+        genesis:
+          type: string
+          description: 创世地址
+        indicator:
+          type: object
+          description: 监控指标数据(map类型数据结构),activeNodes(存活的节点),totalTransaction(链上交易总数),maxTps(tps),avgBlockTime(平均出块时间),
+        name:
+          type: string
+          description: 链名称
+        nodeCount:
+          type: integer
+          format: int32
+          description: 节点数量
+        owner:
+          type: integer
+          format: int64
+          description: 拥有者
+        ownerName:
+          type: string
+          description: 拥有者名字
+        status:
+          type: integer
+          format: int32
+          description: 1 正常  0 异常
+        superManger:
+          type: string
+          description: 超管地址
+      title: ChainResponse
+      x-apifox-folder: Schemas
+    MainStatisticResponse:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        chainVersion:
+          type: string
+          description: 链版本信息
+        createTime:
+          type: integer
+          format: int64
+          description: 创建时间
+        createType:
+          type: integer
+          format: int32
+          description: 创建类型
+        creator:
+          type: integer
+          format: int64
+          description: 创建者
+        creatorName:
+          type: string
+          description: 创建者名字
+        enterpriseCount:
+          type: integer
+          format: int32
+          description: 企业成员数量
+        fedName:
+          type: string
+          description: 联盟名称
+        genesis:
+          type: string
+          description: 创世地址
+        indicator:
+          type: object
+          description: 监控指标数据(map类型数据结构),activeNodes(存活的节点),totalTransaction(链上交易总数),maxTps(tps),avgBlockTime(平均出块时间),
+        name:
+          type: string
+          description: 链名称
+        nodeCount:
+          type: integer
+          format: int32
+          description: 节点数量
+        nodeList:
+          type: array
+          description: 节点列表
+          items:
+            $ref: '#/components/schemas/BaseNodeResponse'
+        orgList:
+          type: array
+          description: 链节点对应的企业成员
+          items:
+            $ref: '#/components/schemas/Organization'
+        owner:
+          type: integer
+          format: int64
+          description: 拥有者
+        ownerName:
+          type: string
+          description: 拥有者名字
+        paraChainList:
+          type: array
+          description: 平行链列表
+          items:
+            $ref: '#/components/schemas/ParaChainResponse'
+        paraCount:
+          type: integer
+          format: int32
+          description: 挂载平行链条数
+        status:
+          type: integer
+          format: int32
+          description: 1 正常  0 异常
+        superManger:
+          type: string
+          description: 超管地址名称
+      title: MainStatisticResponse
+      x-apifox-folder: Schemas
+    PrePaidParam:
+      type: object
+      properties:
+        autoPay:
+          type: boolean
+          description: 是否自动付费
+        autoRenew:
+          type: boolean
+          description: 是否自动续订
+        periodNum:
+          type: integer
+          format: int32
+          description: 付费周期，按月 1-9， 按年1-3
+        periodType:
+          type: string
+          description: 付费周期： month/year
+      title: PrePaidParam
+      x-apifox-folder: Schemas
+    ChainAddr:
+      type: object
+      properties:
+        addr:
+          type: string
+          description: 地址
+        aid:
+          type: string
+          description: 地址id
+        createTime:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int32
+          description: 自增主键
+        mnemonic:
+          type: string
+          description: 助记词
+        name:
+          type: string
+          description: 地址名称
+        note:
+          type: string
+          description: 备注
+        privkey:
+          type: string
+          description: 地址私钥
+        pubkey:
+          type: string
+          description: 地址公钥
+        status:
+          type: integer
+          format: int32
+          description: 地址状态，0正常，-1删除
+        uid:
+          type: integer
+          format: int64
+          description: 用户uid
+        updateTime:
+          type: integer
+          format: int64
+      title: ChainAddr
+      x-apifox-folder: Schemas
+    ChainAddrInfo:
+      type: object
+      properties:
+        addrName:
+          type: string
+          description: 地址名称
+        mnemonic:
+          type: string
+          description: 助记词
+        privateKey:
+          type: string
+          description: 私钥
+        tag:
+          type: string
+          description: 标签
+      title: ChainAddrInfo
+      x-apifox-folder: Schemas
+    IPage«ChainSshKey»:
+      type: object
+      properties:
+        current:
+          type: integer
+          format: int64
+        hitCount:
+          type: boolean
+        pages:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainSshKey'
+        searchCount:
+          type: boolean
+        size:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      title: IPage«ChainSshKey»
+      x-apifox-folder: Schemas
+    ChainVersion:
+      type: object
+      properties:
+        chainUrl:
+          type: string
+          description: 版本包内网下载地址
+        content:
+          type: string
+          description: 版本信息
+        createTime:
+          type: integer
+          format: int64
+          description: 新建时间
+        externalChainUrl:
+          type: string
+          description: 版本包外网下载地址
+        id:
+          type: integer
+          format: int32
+          description: 自增主键
+        operator:
+          type: string
+          description: 操作用户
+        packageName:
+          type: string
+          description: 包名称
+        status:
+          type: integer
+          format: int32
+          description: 是否可用，1表示可用，0表示不可用
+        updateTime:
+          type: integer
+          format: int64
+        version:
+          type: string
+          description: 链版本
+      title: ChainVersion
+      x-apifox-folder: Schemas
+    ChainQueryRequest:
+      type: object
+      properties:
+        eid:
+          type: string
+          description: 企业ID， 可选
+        isDeleted:
+          type: boolean
+          description: 是否已经删除的
+        pageNum:
+          type: integer
+          format: int32
+          description: 页码
+        pageSize:
+          type: integer
+          format: int32
+          description: 每页大小
+      title: ChainQueryRequest
+      x-apifox-folder: Schemas
+    PublicIp:
+      type: object
+      properties:
+        chargeBy:
+          type: string
+          description: 地址计费方式，traffic：按流量计费， 为空标识按带宽计费（默认），其它值无效
+        ipType:
+          type: string
+          description: 公网地址类型，默认为5_bgp
+        shareType:
+          type: string
+          description: 带宽的共享类型， PER：独享， WHOLE：共享
+        size:
+          type: integer
+          format: int32
+          description: 公网带宽，单位 MB/s
+      title: PublicIp
+      x-apifox-folder: Schemas
+    ResizeFlavorRequest:
+      type: object
+      properties:
+        nodeId:
+          type: string
+          description: 节点Id
+        profileRef:
+          type: integer
+          format: int64
+          description: 变更后的套餐ID
+      title: ResizeFlavorRequest
+      x-apifox-folder: Schemas
+    OrderDetailModel:
+      type: object
+      properties:
+        attributeLabel:
+          type: string
+          description: 订单属性展示值
+        attributeMark:
+          type: string
+          description: 订单属性标志
+        attributeName:
+          type: string
+          description: 订单属性名称
+        attributeValue:
+          type: object
+          description: 订单属性值
+        orderDetailId:
+          type: integer
+          format: int64
+          description: 订单明细ID
+        orderId:
+          type: integer
+          format: int64
+          description: 订单ID
+        parentId:
+          type: integer
+          format: int64
+          description: 父ID
+      title: OrderDetailModel
+      description: 订单明细表
+      x-apifox-folder: Schemas
+    IPage«ParaChainResponse»:
+      type: object
+      properties:
+        current:
+          type: integer
+          format: int64
+        hitCount:
+          type: boolean
+        pages:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParaChainResponse'
+        searchCount:
+          type: boolean
+        size:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      title: IPage«ParaChainResponse»
+      x-apifox-folder: Schemas
+    OrderExpireModel:
+      type: object
+      properties:
+        autoRenew:
+          type: boolean
+          description: 是否自动续期
+        duration:
+          type: string
+          description: 服务时长
+        expireId:
+          type: integer
+          format: int64
+          description: 订单过期ID
+        expireTime:
+          type: integer
+          format: int64
+          description: 到期时间
+        orderId:
+          type: integer
+          format: int64
+          description: 订单ID
+        renewState:
+          type: string
+          description: 订单续期状态：UN_EXPIRED：未过期，EXPIRED:已过期, RENEWED:已续期
+      title: OrderExpireModel
+      description: OrderExpireModel
+      x-apifox-folder: Schemas
+    ParaChainRequest:
+      type: object
+      properties:
+        chainExplorerNodeRequest:
+          $ref: '#/components/schemas/ChainExplorerNodeRequest'
+        chainId:
+          type: string
+          example: 全局唯一的UUID，前端填充
+          description: 区块链ID
+        cloudParam:
+          $ref: '#/components/schemas/CloudParam'
+        createUserId:
+          type: integer
+          format: int64
+          description: 创建用户ID
+        explorerCloudParam:
+          $ref: '#/components/schemas/CloudParam'
+        fedId:
+          type: string
+          description: 链所属联盟
+        mainChainId:
+          type: string
+          description: 主链ID
+        mainChainIp:
+          type: string
+          description: 主链IP，指定自定义主链
+        name:
+          type: string
+          description: 链名称
+        nodes:
+          type: array
+          description: 节点列表
+          items:
+            $ref: '#/components/schemas/ChainNodeRequest'
+        params:
+          $ref: '#/components/schemas/ConfigParams'
+        source:
+          type: integer
+          format: int32
+          description: 来源类型0创建1导入
+        title:
+          type: string
+          description: 链title
+      title: ParaChainRequest
+      x-apifox-folder: Schemas
+    SSHkey:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 名称
+      title: SSHkey
+      x-apifox-folder: Schemas
+    ChainOrderModel:
+      type: object
+      properties:
+        address:
+          type: string
+          description: 管理员地址
+        autoRenew:
+          type: boolean
+          description: 是否自动续费
+        billingMode:
+          type: string
+          description: 计费模式
+        chainId:
+          type: string
+          description: 联盟链/平行链ID，创建链时为空，添加节点时需要设置链ID
+        chainType:
+          type: string
+          description: 链类型consortium/para
+        coinSymbol:
+          type: string
+          description: 代币名称
+        commodityInstanceId:
+          type: string
+          description: 商品实例ID:UUID
+        createUserId:
+          type: string
+          description: 创建用户ID
+        driver:
+          type: string
+          description: 云驱动key
+        duration:
+          type: string
+          description: 时长
+        genesis:
+          type: string
+          description: 创世地址
+        genesisAmount:
+          type: string
+          description: 代币总数
+        genesisBlockTime:
+          type: string
+          description: 创世区块时间
+        grpcBindAddr:
+          type: string
+          description: grpc端口
+        jrpcBindAddr:
+          type: string
+          description: jrpc端口
+        mainChainId:
+          type: string
+          description: 主链ID,特指联盟链
+        mainChainIp:
+          type: string
+          description: 主链IP,指定自定义主链
+        maxTxNumber:
+          type: string
+          description: 最大打包交易数
+        name:
+          type: string
+          description: 链名称
+        nodeNum:
+          type: integer
+          format: int32
+          description: 节点数量
+        nodes:
+          type: array
+          description: 节点信息
+          items:
+            $ref: '#/components/schemas/ChainNodeRequest'
+        orderId:
+          type: integer
+          format: int64
+          description: 订单ID
+        orderServiceType:
+          type: string
+          description: 订单服务：NEW：新增，ADD:增加(添加节点使用)
+        p2pSeedPort:
+          type: string
+          description: seeds端口
+        payerUser:
+          type: string
+          description: 支付用户
+        profileId:
+          type: string
+          description: 套餐ID
+        serviceType:
+          type: string
+          description: 服务类型CHAIN/CHAIN-CLOUD
+        source:
+          type: integer
+          format: int32
+          description: 来源类型0创建1导入
+        startHeight:
+          type: string
+          description: 同步起始高度
+        timeoutTxAvail:
+          type: string
+          description: 共识超时时间
+        usePrivKeyAccess:
+          type: boolean
+          description: 登录类型false:账号密码登录true:私钥登录
+        validatorNodePort:
+          type: string
+          description: validatorNode端口
+      title: ChainOrderModel
+      description: ChainOrderModel
+      x-apifox-folder: Schemas
+    ChainExplorerNode:
+      type: object
+      properties:
+        accessPassword:
+          type: string
+        accessUser:
+          type: string
+        appType:
+          type: string
+        chainId:
+          type: string
+        cloudId:
+          type: string
+        configUrl:
+          type: string
+        createTime:
+          type: integer
+          format: int64
+        creator:
+          type: integer
+          format: int64
+        detail:
+          type: string
+        eid:
+          type: string
+        extendField:
+          type: string
+        externalConfigUrl:
+          type: string
+        id:
+          type: string
+        innerIp:
+          type: string
+        name:
+          type: string
+        outerIp:
+          type: string
+        pubKey:
+          type: string
+        sshPort:
+          type: integer
+          format: int32
+        status:
+          type: integer
+          format: int32
+        syncIp:
+          type: string
+        syncPort:
+          type: integer
+          format: int32
+        updateTime:
+          type: integer
+          format: int64
+      title: ChainExplorerNode
+      x-apifox-folder: Schemas
+    ConfigTemplate:
+      type: object
+      properties:
+        createTime:
+          type: integer
+          format: int64
+          description: 新建时间
+        defaultValue:
+          type: string
+          description: 默认值
+        id:
+          type: integer
+          format: int32
+          description: 自增主键
+        paramName:
+          type: string
+          description: 配置参数名称
+        type:
+          type: integer
+          format: int32
+          description: 共识类型,0联盟链,1私链,3平行链
+        updateTime:
+          type: integer
+          format: int64
+          description: 更新时间
+      title: ConfigTemplate
+      x-apifox-folder: Schemas
+    ChainNodeResponse:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        cloudId:
+          type: string
+          description: 对应云主机实例ID
+        configUrl:
+          type: string
+          description: 配置文件下载地址
+        createTime:
+          type: integer
+          format: int64
+          description: 节点创建时间
+        detail:
+          type: string
+          description: 操作详细信息，存储具体的失败原因
+        eid:
+          type: string
+          description: 企业id
+        externalConfigUrl:
+          type: string
+          description: 外网下载地址-页面下载按钮使用
+        id:
+          type: string
+        indicator:
+          type: object
+          description: 监控指标数据,alive(节点是否存活),isSync(节点是否同步),blockHeight(区块高度)，cpuUsage(cpu使用率),memUsage(内存使用率),diskUsage(磁盘使用率)
+        innerIp:
+          type: string
+          description: 内网ip
+        name:
+          type: string
+          description: 节点名称
+        outerIp:
+          type: string
+          description: 外网ip
+        serviceType:
+          type: integer
+          format: int32
+          description: 节点创建方式，0：自备节点，1：个人公有云节点，2：BaaS节点
+        sshPort:
+          type: integer
+          format: int32
+          description: ssh端口
+        status:
+          type: integer
+          format: int32
+          description: 节点状态
+        type:
+          type: integer
+          format: int32
+          description: 节点类型
+      title: ChainNodeResponse
+      x-apifox-folder: Schemas
+    ChainDeployRequest:
+      type: object
+      properties:
+        chainId:
+          type: string
+          example: 全局唯一的UUID，前端填充
+          description: 区块链ID
+        nodes:
+          type: array
+          description: 节点Id列表
+          items:
+            type: string
+      title: ChainDeployRequest
+      x-apifox-folder: Schemas
+    QuickQueryModel:
+      type: object
+      properties:
+        dataId:
+          type: string
+          description: 数据ID
+        dataName:
+          type: string
+          description: 数据名称
+        dataType:
+          type: string
+          description: 数据类型
+          enum:
+            - APPSTORE
+            - CHAIN
+            - CONSORTIUM
+            - EMPTY
+            - FED
+            - ORDER
+            - ORG
+            - PARA
+        detail:
+          type: string
+          description: 数据明细信息
+        objPermission:
+          type: array
+          description: 数据查看所需要的权限
+          items:
+            type: string
+        objectId:
+          type: string
+          description: 对象ID/控制台ID
+        updateTime:
+          type: integer
+          format: int64
+          description: 数据更新时间
+      title: QuickQueryModel
+      description: 快速检索对象
+      x-apifox-folder: Schemas
+    RecycleNodesRequest:
+      type: object
+      properties:
+        chainId:
+          type: string
+          example: 全局唯一的UUID，前端填充
+          description: 区块链ID
+        nodes:
+          type: array
+          description: 节点列表
+          items:
+            type: string
+      title: RecycleNodesRequest
+      x-apifox-folder: Schemas
+    ChainNodeRequest:
+      type: object
+      properties:
+        accessPassword:
+          type: string
+          description: 密码
+        accessUser:
+          type: string
+          description: 登录用户名
+        eid:
+          type: string
+          description: 企业id
+        id:
+          type: string
+          description: 节点唯一id，前端使用UUID生成
+        innerIp:
+          type: string
+          description: 内网ip
+        name:
+          type: string
+          description: 节点名称
+        orderId:
+          type: string
+          description: 订单编号
+        outerIp:
+          type: string
+          description: 外网ip，当为云节点时：为空或和内网IP一致时表示不分配，为0.0.0.0时表示自动分配，其它值(暂未支持)表示已有地址
+        sshKeyId:
+          type: integer
+          format: int32
+          description: 密钥id
+        sshPort:
+          type: integer
+          format: int32
+          description: ssh端口
+        sshPrivKey:
+          type: string
+          description: 私钥
+        sshPubKey:
+          type: string
+          description: 公钥
+        type:
+          type: integer
+          format: int32
+          description: 节点类型
+        usePrivKeyAccess:
+          type: boolean
+          description: 是否使用私钥登录
+      title: ChainNodeRequest
+      x-apifox-folder: Schemas
+    OrderRefundResultModel:
+      type: object
+      properties:
+        applyMoney:
+          type: number
+          description: 申请退款金额
+        applyReason:
+          type: string
+          description: 申请退款原因
+        applyTime:
+          type: integer
+          format: int64
+          description: 申请退款时间
+        applyUser:
+          type: string
+          description: 退款申请人
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderRefundResultModel'
+        id:
+          type: integer
+          format: int64
+          description: 订单退款ID
+        orderId:
+          type: integer
+          format: int64
+          description: 订单ID
+        orderMoney:
+          type: number
+          description: 订单金额
+        orderName:
+          type: string
+          description: 订单商品名称
+        paidMoney:
+          type: number
+          description: 已支付金额
+        parentId:
+          type: integer
+          format: int64
+          description: 父ID
+        payerUser:
+          type: string
+          description: 退款支付用户
+        refundType:
+          type: string
+          description: 退款状态（审核中，已通过，已拒绝，已退款）
+        reviewComment:
+          type: string
+          description: 审核备注
+        reviewTime:
+          type: integer
+          format: int64
+          description: 审核时间
+        reviewUser:
+          type: string
+          description: 审核人
+      title: OrderRefundResultModel
+      description: OrderRefundResultModel
+      x-apifox-folder: Schemas
+    ChainSshKey:
+      type: object
+      properties:
+        createTime:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int32
+          description: 自增主键
+        name:
+          type: string
+          description: 名称
+        privkey:
+          type: string
+          description: 地址私钥
+        pubkey:
+          type: string
+          description: 地址公钥
+        uid:
+          type: integer
+          format: int64
+          description: 用户uid
+      title: ChainSshKey
+      x-apifox-folder: Schemas
+    BaseNodeRequest:
+      type: object
+      properties:
+        accessPassword:
+          type: string
+          description: 密码
+        accessUser:
+          type: string
+          description: 登录用户名
+        name:
+          type: string
+          description: 节点名称
+        sshPort:
+          type: integer
+          format: int32
+          description: ssh端口
+      title: BaseNodeRequest
+      x-apifox-folder: Schemas
+    IPage«MainStatisticResponse»:
+      type: object
+      properties:
+        current:
+          type: integer
+          format: int64
+        hitCount:
+          type: boolean
+        pages:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/MainStatisticResponse'
+        searchCount:
+          type: boolean
+        size:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      title: IPage«MainStatisticResponse»
+      x-apifox-folder: Schemas
+    CloudProfile:
+      type: object
+      properties:
+        bandwidth:
+          type: integer
+          format: int32
+        cloudOwnerId:
+          type: string
+          description: 云平台配置id
+        created:
+          type: integer
+          format: int64
+          description: 创建时间
+        description:
+          type: string
+          description: 配置描述信息
+        driver:
+          type: string
+          description: 云驱动类型
+        enabled:
+          type: boolean
+          description: 是否启用
+        flavor:
+          type: string
+          description: 机器规格
+        flavorName:
+          type: string
+          description: 机器规格名
+        id:
+          type: integer
+          format: int32
+        image:
+          type: string
+          description: 系统镜像ID
+        imageName:
+          type: string
+          description: 系统镜像名称
+        name:
+          type: string
+          description: 配置偏好名称
+        objectId:
+          type: string
+          description: 对象id
+        params:
+          type: string
+          description: 扩展参数，key1=value1,key2=value2格式，目前支持带宽扩展参数 bandwidth=1
+        region:
+          type: string
+          description: 所属区域
+        regionName:
+          type: string
+          description: 所属区域名称
+        subnet:
+          type: string
+          description: 所属子网
+        subnetName:
+          type: string
+          description: 所属子网名称
+        sysVolumeSize:
+          type: integer
+          format: int32
+          description: 系统盘大小
+        sysVolumeType:
+          type: string
+          description: 系统盘类型
+        tags:
+          type: string
+          description: 默认标签，key=value格式，多个kv逗号分隔
+        updated:
+          type: integer
+          format: int64
+          description: 最后更新时间
+        vpc:
+          type: string
+          description: 所属VPC
+        vpcName:
+          type: string
+          description: 所属VPC名称
+        zone:
+          type: string
+          description: 所属可用区
+        zoneName:
+          type: string
+          description: 所属可用区名称
+      title: CloudProfile
+      x-apifox-folder: Schemas
+    IPage«ChainAddr»:
+      type: object
+      properties:
+        current:
+          type: integer
+          format: int64
+        hitCount:
+          type: boolean
+        pages:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainAddr'
+        searchCount:
+          type: boolean
+        size:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      title: IPage«ChainAddr»
+      x-apifox-folder: Schemas
+    ConfigParam:
+      type: object
+      properties:
+        paramName:
+          type: string
+          description: 配置参数名称
+        value:
+          type: string
+          description: 配置参数值
+      title: ConfigParam
+      x-apifox-folder: Schemas
+    ChainExplorerNodeRequest:
+      type: object
+      properties:
+        accessPassword:
+          type: string
+          description: 密码
+        accessUser:
+          type: string
+          description: 登录用户名
+        app_type:
+          type: string
+          description: 业务类型
+        eid:
+          type: string
+          description: 企业id
+        id:
+          type: string
+          description: 唯一id，前端使用UUID生成
+        innerIp:
+          type: string
+          description: 内网ip
+        name:
+          type: string
+          description: 节点名称
+        orderId:
+          type: string
+          description: 订单编号
+        outerIp:
+          type: string
+          description: 外网ip，当为云节点时：为空或和内网IP一致时表示不分配，为0.0.0.0时表示自动分配，其它值(暂未支持)表示已有地址
+        sshPort:
+          type: integer
+          format: int32
+          description: ssh端口
+        sync_ip:
+          type: string
+          description: 服务ip
+        sync_port:
+          type: string
+          description: 服务端口
+      title: ChainExplorerNodeRequest
+      x-apifox-folder: Schemas
+    OrderPayInfoModel:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: 交易金额
+        createTime:
+          type: integer
+          format: int64
+          description: 交易时间
+        paymentType:
+          type: string
+          description: 支付方式
+      title: OrderPayInfoModel
+      description: OrderPayInfoModel
+      x-apifox-folder: Schemas
+    ConfigParams:
+      type: object
+      properties:
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigParam'
+      title: ConfigParams
+      x-apifox-folder: Schemas
+    IPage«BaseNodeResponse»:
+      type: object
+      properties:
+        current:
+          type: integer
+          format: int64
+        hitCount:
+          type: boolean
+        pages:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseNodeResponse'
+        searchCount:
+          type: boolean
+        size:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+      title: IPage«BaseNodeResponse»
+      x-apifox-folder: Schemas

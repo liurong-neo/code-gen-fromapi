@@ -1,0 +1,110 @@
+openapi: 3.0.1
+info:
+  title: 聚合服务
+  description: ''
+  version: 1.0.0
+tags:
+  - name: 企业相关
+  - name: 用户相关
+paths:
+  /v1/chain/base-package/query:
+    post:
+      summary: 获取版本列表
+      x-apifox-folder: 链版本
+      x-apifox-status: released
+      x-baas-ref-apis: '{"$license-service$":["POST /chain-service/explorer/chain"]}'
+      deprecated: false
+      description: 获取链版本列表
+      tags:
+        - 链版本
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                condition:
+                  $ref: '#/components/schemas/ChainBasePackage'
+                pageParam:
+                  $ref: '#/components/schemas/PageQuery'
+              required:
+                - condition
+                - pageParam
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResult%3CChainBasePackage%3E'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+components:
+  schemas:
+    BaseQuery:
+      type: object
+      properties:
+        loginUser:
+          type: string
+        pageIndex:
+          type: integer
+          format: int32
+          example: 1.0
+          description: 当前页码，默认1开始
+        pageSize:
+          type: integer
+          format: int32
+          example: 10.0
+          description: 分页大小，默认10
+        paramOperates:
+          type: object
+          example:
+            name: like
+          description: 参数操作对象默认eq，eq：等于，ne：不等于,gt:大于,ge:大于等于,lt:小于,le:小于等于,like:模糊查询,in:IN
+            查询
+          additionalProperties:
+            type: string
+        params:
+          type: object
+          example:
+            name: test
+          description: 参数对象
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+        sortField:
+          type: string
+          example: name
+          description: 排序字段属性
+        sortOrder:
+          type: string
+          example: ASC/DESC
+          description: 排序方向ASC DESC
+      title: BaseQuery
+      description: 列表查询条件对象，支持分页，排序，根据属性条件查询
+      x-apifox-folder: Schemas

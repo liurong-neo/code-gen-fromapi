@@ -1,0 +1,149 @@
+openapi: 3.0.1
+info:
+  title: API接口样例
+  description: API 描述信息
+  version: 1.0.0
+servers:
+  - url: 'https://api.baas.cn'
+paths:
+  /v1/user:
+    put:
+      tags:
+        - user
+      summary: 更新已有用户信息
+      operationId: updateUser
+      requestBody:
+        description: 需要更新的用户信息
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        400:
+          description: 无效请求
+          content: {}
+        404:
+          description: 未找到指定用户
+          content: {}
+        405:
+          description: 校验异常
+          content: {}
+      x-codegen-request-body-name: body
+    post:
+      tags:
+        - user
+      summary: 新增用户
+      operationId: addUser
+      requestBody:
+        description: 要新增的用户信息
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        400:
+          description: 无效请求
+          content: {}
+        405:
+          description: 校验异常
+          content: {}
+      x-codegen-request-body-name: body
+  /v2/user/{userId}:
+    get:
+      tags:
+        - user
+      summary: 根据ID查找用户
+      description: 用户信息
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: 操作成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: 无效请求
+          content: {}
+        404:
+          description: 用户不存在
+          content: {}
+    delete:
+      tags:
+        - user
+      summary: 删除一个用户
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          description: 要删除的用户ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        400:
+          description: 无效请求
+          content: {}
+        404:
+          description: 用户不存在
+          content: {}
+  /v1/users:
+    get:
+      tags:
+        - user
+      summary: 返回用户列表
+      description: 返回所有的用户列表
+      operationId: getUsers
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        400:
+          description: 无效请求
+          content: {}
+        404:
+          description: 没有用户存在
+          content: {}
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 用户ID
+        name:
+          type: string
+          description: 用户名
+        age:
+          type: integer
+          format: int32
+          default: 24
+          description: 用户年龄
+        sex:
+          type: string
+          description: 用户性别
+          default: male
+          enum:
+            - male
+            - female

@@ -1,0 +1,28 @@
+package {{servicePackage}};
+
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fzm.baas.base.model.PageResult;
+import com.fzm.baas.base.model.quickquery.QuickQueryModel;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.web.multipart.MultipartFile;
+import {{modelPackage}}.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.fzm.baas.base.model.BaseQuery;
+public interface {{className}}Delegate {
+{{#pathGetEntityList}}
+    {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}} {{methodName}}({{#params}}{{&paramType}} {{paramName}}{{/params}}) throws Exception;
+{{/pathGetEntityList}}
+{{#pathDeleteEntityList}}
+    {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}} {{methodName}}({{#params}}{{&paramType}} {{paramName}}{{/params}}) throws Exception;
+{{/pathDeleteEntityList}}
+{{#pathPostEntityList}}
+    {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}} {{methodName}}({{#params}}{{#hasRequestParams}},{{/hasRequestParams}}{{&paramType}} {{paramName}}{{/params}}) throws Exception;
+{{/pathPostEntityList}}
+{{#pathPutEntityList}}
+    {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}} {{methodName}}({{#params}}{{#hasRequestParams}},{{/hasRequestParams}}{{&paramType}} {{paramName}}{{/params}}) throws Exception;
+{{/pathPutEntityList}}
+}

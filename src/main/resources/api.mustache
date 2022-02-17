@@ -1,0 +1,17 @@
+package {{apiPackage}};
+
+{{#importPackageList}}
+import {{className}};{{/importPackageList}}
+import javax.servlet.ServletException;
+import com.fzm.baas.base.model.quickquery.QuickQueryModel;
+public interface {{className}}Delegate {
+{{#pathGetEntity}}
+    {{&pathGetEntity.responseType}} {{pathGetEntity.methodName}}({{#pathGetEntity.params}}{{paramType}} {{paramName}}{{/pathGetEntity.params}}) throws BaasException;
+{{/pathGetEntity}}{{#pathDeleteEntity}}
+    void {{pathDeleteEntity.methodName}}({{#pathDeleteEntity.params}}{{paramType}} {{paramName}}{{/pathDeleteEntity.params}}) throws BaasException;
+{{/pathDeleteEntity}}{{#pathPostEntity}}
+    void {{pathPostEntity.methodName}}({{#pathPostEntity.params}}{{paramType}} {{paramName}}{{/pathPostEntity.params}}) throws BaasException;
+{{/pathPostEntity}}{{#pathPutEntity}}
+    void {{pathPutEntity.methodName}}({{#pathPutEntity.params}}{{paramType}} {{paramName}}{{/pathPutEntity.params}}) throws BaasException;
+{{/pathPutEntity}}
+}

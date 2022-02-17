@@ -1,0 +1,2062 @@
+openapi: 3.0.1
+info:
+  title: 链管理服务
+  description: ''
+  version: 1.0.0
+tags:
+  - name: 平行链
+  - name: 链节点
+  - name: 联盟链
+  - name: 链快速检索
+  - name: 链配置参数
+  - name: 链版本
+paths:
+  /v1/chain/base-package:
+    post:
+      summary: 新增版本信息
+      x-apifox-folder: 链版本
+      x-apifox-status: released
+      deprecated: false
+      description: 新增链版本列表
+      tags:
+        - 链版本
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                version:
+                  type: string
+                  description: 版本号
+                content:
+                  type: string
+                  description: 描述信息
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      x-baas-ref-apis: '{"$system-service$":["POST /v1/websocket"],"$user-service$":["POST /v1/address/query","POST /v2/address/query"]}'
+    put:
+      summary: 更新版本信息
+      x-apifox-folder: 链版本
+      x-apifox-status: released
+      deprecated: false
+      description: 更新版本信息
+      tags:
+        - 链版本
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: string
+                  description: 版本号
+                content:
+                  type: string
+                  description: 内容说明
+                file:
+                  type: string
+                  description: 版本包
+                  format: binary
+                status:
+                  type: string
+                  description: 状态
+                id:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v2/chain/consortium:
+    post:
+      summary: 创建链请求
+      x-apifox-folder: 联盟链
+      x-apifox-status: released
+      deprecated: false
+      description: 创建联盟链请求
+      tags:
+        - 联盟链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChainCreate'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+    put:
+      summary: 修改链归属或名称
+      x-apifox-folder: 联盟链
+      x-apifox-status: developing
+      deprecated: false
+      description: 修改链归属或名称
+      tags:
+        - 联盟链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: string
+                  description: 链Id
+                chainName:
+                  type: string
+                  description: 链名称
+                owner:
+                  type: string
+                  description: 链所有者，可以为企业，也可为联盟
+              required:
+                - chainId
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+  /v2/chain/node:
+    put:
+      summary: 链节点绑定、联盟链节点角色变更
+      x-apifox-folder: 链节点
+      x-apifox-status: released
+      deprecated: false
+      description: 联盟链节点角色变更/绑定主机
+      tags:
+        - 链节点
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operateType:
+                  type: string
+                  description: 操作类型，0：绑定节点，1：变更节点角色
+                nodes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ChainNode'
+              required:
+                - operateType
+                - nodes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+    get:
+      summary: 查看指定的节点信息（可用于校验主机是否被引用）
+      x-apifox-folder: 链节点
+      x-apifox-status: released
+      deprecated: false
+      description: 查看指定的节点信息
+      tags:
+        - 链节点
+      parameters:
+        - name: hostId
+          in: query
+          description: 传入则表明，根据主机Id查询。
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: nodeId
+          in: query
+          description: 传入则表明，根据节点Id查询。
+          required: false
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChainNode'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      x-baas-ref-apis: '{"$user-service$":["POST /v1/host/query"]}'
+    post:
+      summary: 新增节点
+      x-apifox-folder: 链节点
+      x-apifox-status: developing
+      deprecated: false
+      description: 新增节点
+      tags:
+        - 链节点
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ChainNode'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+  /v2/chain/parameters:
+    get:
+      summary: 获取配置模板
+      x-apifox-folder: 链配置参数
+      x-apifox-status: released
+      deprecated: false
+      description: 获取配置模板本
+      tags:
+        - 链配置参数
+      parameters:
+        - name: type
+          in: query
+          description: 链类型
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: 链Id，为空取模板
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: paramName
+          in: query
+          description: 传入表示取指定值
+          required: false
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigParam'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/para/check:
+    get:
+      summary: 平行链创建校验
+      x-apifox-folder: 平行链
+      x-apifox-status: released
+      deprecated: false
+      description: 校验License中的链相关限制，如果传入的是 mainChainId和name 则校验名称是否正确。
+      tags:
+        - 平行链
+      parameters:
+        - name: chainId
+          in: query
+          description: 链Id(新增节点时传入)
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: nodeSize
+          in: query
+          description: 节点数量
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: mainChainId
+          in: query
+          description: 主链Id
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: 平行链名称
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: title
+          in: query
+          description: 平行链title
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: isCreate
+          in: query
+          description: 是否创建。true则为创建链，需要校验lincese链数量
+          required: false
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/consortium/import:
+    post:
+      summary: 导入链请求
+      x-apifox-folder: 联盟链
+      x-apifox-status: developing
+      deprecated: false
+      description: 创建链请求。
+      tags:
+        - 联盟链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChainCreate'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+  /v1/chain/para:
+    put:
+      summary: 修改链名称
+      x-apifox-folder: 平行链
+      x-apifox-status: developing
+      deprecated: false
+      description: 修改链归属或名称
+      tags:
+        - 平行链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: string
+                chainName:
+                  type: string
+              required:
+                - chainId
+                - chainName
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+    post:
+      summary: 创建平行链请求
+      x-apifox-folder: 平行链
+      x-apifox-status: developing
+      deprecated: false
+      description: 创建平行链请求
+      tags:
+        - 平行链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChainCreate'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+  /v1/chain/para/package:
+    get:
+      summary: 生成并下载指定链的初始化部署包
+      x-apifox-folder: 平行链
+      x-apifox-status: released
+      deprecated: false
+      description: 生成并下载指定链的初始化部署包
+      tags:
+        - 平行链
+      parameters:
+        - name: nodeIds
+          in: query
+          description: 节点ID列表，以”,“分隔
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: 链Id
+          required: false
+          example: ''
+          schema:
+            type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/consortium/package:
+    get:
+      summary: 生成并下载指定链的初始化部署包
+      x-apifox-folder: 联盟链
+      x-apifox-status: released
+      deprecated: false
+      description: 生成并下载指定链的初始化部署包
+      tags:
+        - 联盟链
+      parameters:
+        - name: nodeIds
+          in: query
+          description: 节点ID列表，以”,“分隔
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: 链Id
+          required: false
+          example: ''
+          schema:
+            type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/para/query:
+    post:
+      summary: 查询平行链列表
+      x-apifox-folder: 平行链
+      x-apifox-status: released
+      deprecated: false
+      description: 查询所有平行链
+      tags:
+        - 平行链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pageParam:
+                  $ref: '#/components/schemas/PageQuery'
+                eId:
+                  type: string
+                  description: 企业id
+                chainName:
+                  type: string
+                  description: 链名称
+                mainChainId:
+                  type: string
+                  description: 主链id
+                status:
+                  type: integer
+                  description: 状态
+                eName:
+                  type: string
+                  description: 企业名称
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResult<ParaChain>'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/consortium/query:
+    post:
+      summary: 查询联盟链列表
+      x-apifox-folder: 联盟链
+      x-apifox-status: released
+      deprecated: false
+      description: |-
+        查询联盟链列表
+        根据当前登录类型查询链列表
+      tags:
+        - 联盟链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eId:
+                  type: string
+                  description: 链所有者
+                fedId:
+                  type: string
+                  description: 联盟Id
+                chainName:
+                  type: string
+                  description: 链名称
+                queryType:
+                  type: string
+                  description: 查询类型；0：查询企业，1：查询联盟，2：查询企业及企业所属联盟下的链
+                pageParam:
+                  $ref: '#/components/schemas/PageQuery'
+                status:
+                  type: integer
+                  description: 链状态
+                eName:
+                  type: string
+                  description: 企业名称
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResult<ConsortiumChain>'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResult<ConsortiumChain>'
+              examples: {}
+  /v1/chain/index/{id}:
+    get:
+      summary: 查询链快速检索信息
+      x-apifox-folder: 链快速检索
+      x-apifox-status: released
+      deprecated: false
+      description: ''
+      tags:
+        - 链快速检索
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: chainId
+          in: query
+          description: chainId
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuickQuery'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/base-package/query:
+    post:
+      summary: 获取版本列表
+      x-apifox-folder: 链版本
+      x-apifox-status: released
+      deprecated: false
+      description: 获取链版本列表
+      tags:
+        - 链版本
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                condition:
+                  $ref: '#/components/schemas/ChainBasePackage'
+                pageParam:
+                  $ref: '#/components/schemas/PageQuery'
+              required:
+                - condition
+                - pageParam
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResult<ChainBasePackage>'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/consortium/{id}:
+    get:
+      summary: 查看指定的联盟链信息
+      x-apifox-folder: 联盟链
+      x-apifox-status: released
+      deprecated: false
+      description: 查看指定的链信息(包含监控信息,节点数量）
+      tags:
+        - 联盟链
+      parameters:
+        - name: id
+          in: path
+          description: 链ID
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsortiumChain'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+    delete:
+      summary: 删除指定联盟链
+      x-apifox-folder: 联盟链
+      x-apifox-status: released
+      deprecated: false
+      description: 删除指定联盟链
+      tags:
+        - 联盟链
+      parameters:
+        - name: id
+          in: path
+          description: 链ID
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/node/query:
+    post:
+      summary: 查询节点列表
+      x-apifox-folder: 链节点
+      x-apifox-status: released
+      deprecated: false
+      description: 查询指定企业下某条链的节点列表，传chainId则查链下、传eid则企业下、均传则企业下某链
+      tags:
+        - 链节点
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: string
+                  description: 链id
+                eId:
+                  type: string
+                  description: 企业Id，传入则查询某链下，指定企业的节点列表
+                nodeName:
+                  type: string
+                  description: 节点名称
+                nodeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Id数组
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChainNode'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      x-baas-ref-apis: '{"$user-service$":["POST /v1/host/query"]}'
+  /v1/chain/parameters/:
+    put:
+      summary: 更新链/模板配置参数
+      x-apifox-folder: 链配置参数
+      x-apifox-status: developing
+      deprecated: false
+      description: 更新链/模板配置参数（链部署前可修改）
+      tags:
+        - 链配置参数
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                params:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ConfigParam'
+                chainId:
+                  type: string
+                  description: 链Id，传入则表示更新指定链的指定参数
+                type:
+                  type: string
+                  description: 参数类型
+              required:
+                - params
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+  /v1/chain/para/import:
+    post:
+      summary: 导入平行链请求
+      x-apifox-folder: 平行链
+      x-apifox-status: developing
+      deprecated: false
+      description: 创建平行链请求
+      tags:
+        - 平行链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChainCreate'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+  /v1/chain/consortium/check:
+    get:
+      summary: 联盟链创建校验
+      x-apifox-folder: 联盟链
+      x-apifox-status: released
+      deprecated: false
+      description: 校验License中的链相关限制、同时检验名称是否重复等。 如果传入的是名称，则校验名称
+      tags:
+        - 联盟链
+      parameters:
+        - name: chainId
+          in: query
+          description: 链Id(新增节点时传入)
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: nodeSize
+          in: query
+          description: 节点数量
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: 名称、校验名称重复
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: isCreate
+          in: query
+          description: 是否创建。true则为创建链，需要校验lincese链数量
+          required: false
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/para/deploy:
+    put:
+      summary: 部署指定链，指定节点
+      x-apifox-folder: 平行链
+      x-apifox-status: released
+      deprecated: false
+      description: 部署指定链，指定节点
+      tags:
+        - 平行链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: string
+                nodes:
+                  type: array
+                  items:
+                    type: string
+                deployType:
+                  type: string
+                  description: 部署类型0：全量部署，1：部署agent。
+              required:
+                - chainId
+                - nodes
+                - deployType
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      x-baas-ref-apis: '{"$system-service$":["POST /v1/websocket/{userId}"]}'
+  /v1/chain/para/{id}:
+    get:
+      summary: 查看指定的平行链信息
+      x-apifox-folder: 平行链
+      x-apifox-status: released
+      deprecated: false
+      description: 查看指定的平行链信息(包含监控信息,节点数量）
+      tags:
+        - 平行链
+      parameters:
+        - name: id
+          in: path
+          description: 链ID
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParaChain'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+    delete:
+      summary: 删除平行链信息
+      x-apifox-folder: 平行链
+      x-apifox-status: released
+      deprecated: false
+      description: 删除平行链信息
+      tags:
+        - 平行链
+      parameters:
+        - name: id
+          in: path
+          description: 链ID
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/consortium/deploy:
+    put:
+      summary: 部署指定链，指定节点
+      x-apifox-folder: 联盟链
+      x-apifox-status: released
+      deprecated: false
+      description: 部署指定链，指定节点
+      tags:
+        - 联盟链
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: string
+                  description: 链Id
+                nodes:
+                  type: array
+                  items:
+                    type: string
+                  description: 节点列表
+                deployType:
+                  type: integer
+                  description: 部署类型0：全量部署，1：部署agent。
+              required:
+                - chainId
+                - deployType
+                - nodes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      x-baas-ref-apis: '{"$system-service$":["POST /v1/websocket"],"$user-service$":["POST /v1/address/query"]}'
+  /v1/chain/index:
+    get:
+      summary: 询联盟链/平行链快速检索信息所有ID
+      x-apifox-folder: 链快速检索
+      x-apifox-status: released
+      deprecated: false
+      description: ''
+      tags:
+        - 链快速检索
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/node/{id}:
+    delete:
+      summary: 删除节点信息
+      x-apifox-folder: 链节点
+      x-apifox-status: released
+      deprecated: false
+      description: 删除指定链的指定节点信息
+      tags:
+        - 链节点
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+  /v1/chain/base-package/{id}:
+    delete:
+      summary: 删除版本信息
+      x-apifox-folder: 链版本
+      x-apifox-status: released
+      deprecated: false
+      description: 删除版本信息
+      tags:
+        - 链版本
+      parameters:
+        - name: id
+          in: path
+          description: 版本id
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples: {}
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+components:
+  schemas:
+    ChainCreate:
+      type: object
+      properties:
+        fedId:
+          type: string
+          description: 联盟Id；为空表示当前登陆企业创建的链
+        title:
+          type: string
+          description: 链title
+        chainId:
+          type: string
+          description: 链Id
+        createType:
+          type: integer
+          description: 来源类型0创建1导入
+        params:
+          $ref: '#/components/schemas/ChainConfigParam'
+        name:
+          type: string
+          description: 链名称
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainNode'
+          description: 节点列表
+        mainChainId:
+          type: string
+          description: 主链Id
+        requestContent:
+          type: string
+          description: 创建请求说明，如果是当前企业创建则可为空。
+        eId:
+          type: string
+          description: 创建企业Id
+        creator:
+          type: string
+          description: 创建人Id
+      required:
+        - fedId
+        - title
+        - chainId
+        - createType
+        - params
+        - name
+        - nodes
+        - mainChainId
+        - requestContent
+        - eId
+        - creator
+      x-apifox-folder: 链管理/Chain
+    ConsortiumChain:
+      type: object
+      properties:
+        creator:
+          type: integer
+          description: 创建者Id
+        createType:
+          type: integer
+          description: 0：baas平台创建，1：导入只读，2：导入管理
+        chainVersion:
+          type: string
+          description: 链版本
+        status:
+          type: integer
+          description: 链状态
+        indicator:
+          type: object
+          additionalProperties:
+            type: string
+          description: 监控指标值，Map类型
+          properties: {}
+        name:
+          type: string
+          description: 名称
+        ownerType:
+          type: string
+          description: 拥有者类型0：企业，1：联盟
+        owner:
+          type: string
+          description: 拥有者
+        ownerName:
+          type: string
+          description: 拥有者名称
+        createTime:
+          type: integer
+        creatorName:
+          type: string
+          description: 创建人名称
+        nodeList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainNode'
+        superManger:
+          type: string
+          description: 超管地址
+        genesis:
+          type: string
+        id:
+          type: string
+          description: 链id
+      x-apifox-folder: 链管理/Chain/Consortium
+    PageResult<ChainBasePackage>:
+      type: object
+      properties:
+        currPage:
+          type: boolean
+        expand:
+          type: object
+          properties: {}
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainBasePackage'
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+        totalPage:
+          type: integer
+      required:
+        - currPage
+        - expand
+        - list
+        - pageSize
+        - totalCount
+        - totalPage
+      title: PageResult<ChainBasePackage>
+      x-apifox-folder: 链管理/ChainPackage
+    ConfigParam:
+      type: object
+      properties:
+        paramName:
+          type: string
+          description: 配置参数名称
+        value:
+          type: string
+          description: 配置参数值
+        id:
+          type: integer
+      title: ConfigParam
+      x-apifox-folder: 链管理/ChainConfig
+      required:
+        - id
+    QuickQuery:
+      type: object
+      properties:
+        dataId:
+          type: string
+          description: 数据ID
+        dataName:
+          type: string
+          description: 数据名称
+        dataType:
+          type: string
+          description: 数据类型
+          enum:
+            - APPSTORE
+            - CHAIN
+            - CONSORTIUM
+            - EMPTY
+            - FED
+            - ORDER
+            - ORG
+            - PARA
+        detail:
+          type: string
+          description: 数据明细信息
+        objPermission:
+          type: array
+          description: 数据查看所需要的权限
+          items:
+            type: string
+        objectId:
+          type: string
+          description: 对象ID/控制台ID
+        updateTime:
+          type: integer
+          format: int64
+          description: 数据更新时间
+      title: QuickQuery
+      description: 快速检索对象
+      x-apifox-folder: 链管理/QuickQuery
+    ChainConfigParam:
+      type: object
+      properties:
+        maxTxNumber:
+          type: string
+          description: ' 区块最大打包交易数'
+        timeoutTxAvail:
+          type: string
+          description: 打包间隔
+        coinSymbol:
+          type: string
+          description: 积分名称
+        genesis:
+          type: string
+          description: 创世地址
+        genesisAmount:
+          type: string
+          description: 积分总数
+        jrpcBindAddr:
+          type: string
+          description: jrpc端口
+        grpcBindAddr:
+          type: string
+          description: grpc端口
+        P2PSeedPort:
+          type: string
+          description: p2p端口
+        validatorNodePort:
+          type: string
+          description: 共识端口
+        genesisBlockTime:
+          type: string
+          description: 创世区块时间
+        startHeight:
+          type: string
+          description: 同步起始高度
+      x-apifox-folder: 链管理/ChainConfig
+    PageQuery:
+      type: object
+      properties:
+        pageIndex:
+          type: integer
+        pageSize:
+          type: integer
+        sortField:
+          type: string
+        sortOrder:
+          type: string
+      x-apifox-folder: 链管理
+    PageResult<ConsortiumChain>:
+      type: object
+      properties:
+        currPage:
+          type: integer
+          format: int64
+        expand:
+          type: object
+          properties: {}
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsortiumChain'
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+          format: int64
+        totalPage:
+          type: integer
+          format: int64
+      title: PageResult<ConsortiumChain>
+      x-apifox-folder: 链管理/Chain/Consortium
+    PageResult<ParaChain>:
+      type: object
+      properties:
+        currPage:
+          type: integer
+          format: int64
+        expand:
+          type: object
+          properties: {}
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParaChain'
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+          format: int64
+        totalPage:
+          type: integer
+          format: int64
+      title: PageResult<ParaChain>
+      x-apifox-folder: 链管理/Chain/Para
+    ParaChain:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 链ID
+        chainVersion:
+          type: string
+          description: 链版本信息
+        createTime:
+          type: integer
+          format: int64
+          description: 创建时间
+        createType:
+          type: integer
+          format: int32
+          description: 创建类型
+        creator:
+          type: integer
+          format: int64
+          description: 创建者
+        creatorName:
+          type: string
+          description: 创建者名字
+        genesis:
+          type: string
+          description: 创世地址
+        indicator:
+          type: object
+          description: 监控指标数据(map类型数据结构),activeNodes(存活的节点),totalTransaction(链上交易总数),maxTps(tps),avgBlockTime(平均出块时间),
+          additionalProperties:
+            type: string
+          properties: {}
+        mainChainId:
+          type: string
+          description: 主链链ID
+        mainChainName:
+          type: string
+          description: 主链名称
+        name:
+          type: string
+          description: 链名称
+        nodeCount:
+          type: integer
+          format: int32
+          description: 节点数量
+        nodeList:
+          type: array
+          description: 节点列表
+          items:
+            $ref: '#/components/schemas/ChainNode'
+        eid:
+          type: integer
+          format: int64
+          description: 所属企业
+        eName:
+          type: string
+          description: 所属企业名字
+        status:
+          type: integer
+          format: int32
+        superManger:
+          type: string
+          description: 超管地址
+      title: ParaChain
+      x-apifox-folder: 链管理/Chain/Para
+    ChainBasePackage:
+      type: object
+      properties:
+        content:
+          type: string
+          description: 待补充
+        status:
+          type: integer
+          description: 待补充
+        externalChainUrl:
+          type: string
+          description: 待补充
+        version:
+          type: string
+        id:
+          type: integer
+        chainUrl:
+          type: string
+        updateTime:
+          type: integer
+        operator:
+          type: string
+        packageName:
+          type: string
+        createTime:
+          type: integer
+      required:
+        - content
+        - status
+        - externalChainUrl
+        - version
+        - id
+        - chainUrl
+        - updateTime
+        - operator
+        - packageName
+        - createTime
+      x-apifox-folder: 链管理/ChainPackage
+    ChainNode:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: 链ID
+        id:
+          type: string
+          description: 节点id
+        createTime:
+          type: integer
+          format: int64
+          description: 节点创建时间
+        operationDetail:
+          type: string
+          description: 操作详细信息，存储具体的失败原因
+        eid:
+          type: string
+          description: 企业id
+        eName:
+          type: string
+          description: 企业名称
+        indicator:
+          type: object
+          description: 监控指标数据,alive(节点是否存活),isSync(节点是否同步),blockHeight(区块高度)，cpuUsage(cpu使用率),memUsage(内存使用率),diskUsage(磁盘使用率)
+          additionalProperties:
+            type: string
+          properties: {}
+        name:
+          type: string
+          description: 节点名称
+        status:
+          type: integer
+          format: int32
+          description: 节点状态
+        roleType:
+          type: integer
+          description: 节点角色类型 ；0:共识节点，1:观察节点
+        createType:
+          type: integer
+          description: 创建类型。0:baas创建，1:导入
+        isWatch:
+          type: integer
+          description: 是否仅观察 0:否，1:是
+        hostId:
+          type: string
+          description: 关联主机Id
+        pubKey:
+          type: string
+          description: 节点公钥
+        priKey:
+          type: string
+          description: 节点私钥
+        innerIp:
+          type: string
+          description: 节点内网Ip
+        outerIp:
+          type: string
+          description: 节点外网Ip
+        address:
+          type: string
+          description: 节点地址
+      x-apifox-folder: 链管理/ChainNode
+      description: 节点详细
+    PageResult<ChainNode>:
+      type: object
+      properties:
+        currPage:
+          type: integer
+          format: int64
+        expand:
+          type: object
+          properties: {}
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainNode'
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+          format: int64
+        totalPage:
+          type: integer
+          format: int64
+      title: PageResult<ChainNode>
+      x-apifox-folder: 链管理/ChainNode

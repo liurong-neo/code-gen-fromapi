@@ -1,0 +1,57 @@
+package {{apiPackage}};
+
+import {{servicePackage}}.{{className}}Delegate;
+import javax.validation.Valid;
+import {{modelPackage}}.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import com.fzm.baas.base.model.quickquery.QuickQueryModel;
+import io.swagger.annotations.Api;
+import javax.validation.constraints.NotNull;
+import com.fzm.baas.base.annotation.BaaSResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import com.fzm.baas.base.model.PageResult;
+import com.fzm.baas.base.model.BaseQuery;
+@Api(tags = "{{className}}")
+@RestController
+@BaaSResponseBody
+// {{#urlPath}}@RequestMapping("{{urlPath}}"){{/urlPath}}
+public class {{className}}Controller {
+
+    @Autowired
+    private {{className}}Delegate delegate{{className}}Api;
+
+
+
+{{#pathGetEntityList}}
+    @GetMapping{{#urlPath}}("{{urlPath}}"){{/urlPath}}
+    public {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}} {{methodName}}({{#params}} {{#pathParamTag}}@PathVariable(name = "{{flag}}") {{paramType}} {{paramName}} {{/pathParamTag}}{{#queryParamTag}}@RequestParam(required ={{required}},name="{{flag}}") {{paramType}} {{paramName}}{{/queryParamTag}} {{/params}}) throws Exception {
+        {{#responseType}}return{{/responseType}} delegate{{className}}Api.{{methodName}}({{#params}}{{paramName}}{{/params}});
+    }
+{{/pathGetEntityList}}
+
+{{#pathDeleteEntityList}}
+    @DeleteMapping{{#urlPath}}("{{urlPath}}"){{/urlPath}}
+    public {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}} {{methodName}}({{#params}} {{#bodyParamTag}}@RequestBody @Valid{{/bodyParamTag}} {{#pathParamTag}}@PathVariable(name = "{{flag}}"){{/pathParamTag}}{{#queryParamTag}}@RequestParam(required ={{required}},name="{{flag}}") {{/queryParamTag}} {{&paramType}} {{paramName}}{{/params}}) throws Exception {
+        {{#responseType}}return{{/responseType}} delegate{{className}}Api.{{methodName}}({{#params}}{{#hasRequestParams}},{{/hasRequestParams}}{{paramName}}{{/params}});
+    }
+{{/pathDeleteEntityList}}
+
+{{#pathPostEntityList}}
+    @PostMapping{{#urlPath}}("{{urlPath}}"){{/urlPath}}
+    public {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}} {{methodName}}({{^uploadRequest}}{{#params}}{{#queryParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestParam(required={{required}},name="{{flag}}") {{/queryParamTag}}{{#bodyParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestBody @Valid{{/bodyParamTag}} {{&paramType}} {{paramName}}{{/params}}{{/uploadRequest}}{{#uploadRequest}}{{#params}}{{#queryParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestParam(required={{required}},name="{{flag}}"){{&paramType}} {{paramName}}{{/queryParamTag}}{{#bodyParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}{{&paramType}} {{paramName}}{{/bodyParamTag}} {{/params}}{{/uploadRequest}}) throws Exception {
+        {{#responseType}}return{{/responseType}} delegate{{className}}Api.{{methodName}}({{#params}}{{#hasRequestParams}},{{/hasRequestParams}}{{paramName}}{{/params}});
+    }
+{{/pathPostEntityList}}
+
+{{#pathPutEntityList}}
+    @PutMapping{{#urlPath}}("{{urlPath}}"){{/urlPath}}
+    public {{#responseType}}{{&responseType}}{{/responseType}}{{^responseType}}void{{/responseType}}  {{methodName}}({{#params}}{{#queryParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestParam(required={{required}},name="{{flag}}") {{/queryParamTag}}{{#bodyParamTag}}{{#hasRequestParams}},{{/hasRequestParams}}@RequestBody @Valid{{/bodyParamTag}} {{&paramType}} {{paramName}}{{/params}}) throws Exception {
+        {{#responseType}}return{{/responseType}} delegate{{className}}Api.{{methodName}}({{#params}}{{#hasRequestParams}},{{/hasRequestParams}}{{paramName}}{{/params}});
+    }
+{{/pathPutEntityList}}
+}
